@@ -1,0 +1,248 @@
+
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | FeedbackHub{% endblock %}
+
+{% block head %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-heading">
+
+    <div>
+
+        <p class="eyebrow">OVERVIEW</p>
+
+        <h1>Feedback Dashboard</h1>
+
+        <p class="subtitle">
+            Review responses and track customer satisfaction.
+        </p>
+
+    </div>
+
+    <div class="actions">
+
+        <a class="button secondary"
+           href="{{ url_for('export_csv') }}">
+            Export CSV
+        </a>
+
+        <a class="button secondary"
+           href="{{ url_for('confirm_logout') }}">
+            Log Out
+        </a>
+
+    </div>
+
+</div>
+
+
+<section class="stats-grid">
+
+    <article class="stat-card">
+
+        <span>Total Responses</span>
+
+        <strong>{{ total }}</strong>
+
+    </article>
+
+    <article class="stat-card">
+
+        <span>Average Rating</span>
+
+        <strong>{{ average }} / 5</strong>
+
+    </article>
+
+</section>
+
+
+<section class="panel chart-panel">
+
+    <h2>Ratings Breakdown</h2>
+
+    <div class="chart-wrap">
+
+        <canvas id="ratingsChart"></canvas>
+
+    </div>
+
+</section>
+
+
+<section class="panel">
+
+    <div class="table-heading">
+
+        <h2>Submitted Feedback</h2>
+
+        <span class="muted">
+            {{ total }} record(s)
+        </span>
+
+    </div>
+
+    {% if feedback %}
+
+    <div class="table-scroll">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Rating</th>
+                    <th>Comments</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in feedback %}
+
+                <tr>
+
+                    <td>{{ item.id }}</td>
+
+                    <td>{{ item.name }}</td>
+
+                    <td>{{ item.email }}</td>
+
+                    <td>
+                        <span class="rating-pill">
+                            {{ item.rating }}/5
+                        </span>
+                    </td>
+
+                    <td class="comment-cell">
+                        {{ item.comments or "—" }}
+                    </td>
+
+                    <td>{{ item.date_submitted }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+    <p class="empty-state">
+        No feedback has been submitted yet.
+    </p>
+
+    {% endif %}
+
+</section>
+
+
+<section class="danger-zone">
+
+    <div>
+
+        <h2>Clear All Feedback</h2>
+
+        <p>
+            This permanently deletes every feedback record
+            from the local database.
+        </p>
+
+    </div>
+
+    <form
+        method="POST"
+        action="{{ url_for('clear_data') }}"
+        data-confirm="Delete all feedback? This cannot be undone."
+    >
+
+        <input type="hidden"
+               name="csrf_token"
+               value="{{ csrf_token() }}">
+
+        <button class="button danger" type="submit">
+            Delete All Records
+        </button>
+
+    </form>
+
+</section>
+
+
+<script>
+
+const ratingCounts = {{ rating_counts | tojson }};
+
+const canvas = document.getElementById("ratingsChart");
+
+if (canvas && window.Chart) {
+
+    new Chart(canvas, {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+                "1 Star",
+                "2 Stars",
+                "3 Stars",
+                "4 Stars",
+                "5 Stars"
+            ],
+
+            datasets: [{
+
+                label: "Responses",
+
+                data: [1, 2, 3, 4, 5].map(
+                    n => ratingCounts[String(n)] || 0
+                ),
+
+                borderWidth: 1
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}
