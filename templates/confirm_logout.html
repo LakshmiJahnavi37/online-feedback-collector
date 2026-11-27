@@ -1,0 +1,40 @@
+
+{% extends "base.html" %}
+
+{% block title %}Confirm Logout | FeedbackHub{% endblock %}
+
+{% block content %}
+
+<section class="panel centered">
+
+    <h1>Log Out?</h1>
+
+    <p class="subtitle">
+        Are you sure you want to end your admin session?
+    </p>
+
+    <div class="inline-actions">
+
+        <a class="button secondary"
+           href="{{ url_for('admin_dashboard') }}">
+            Stay Signed In
+        </a>
+
+        <form method="POST"
+              action="{{ url_for('logout') }}">
+
+            <input type="hidden"
+                   name="csrf_token"
+                   value="{{ csrf_token() }}">
+
+            <button class="button danger" type="submit">
+                Yes, Log Out
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

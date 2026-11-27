@@ -1,0 +1,23 @@
+
+{% extends "base.html" %}
+
+{% block title %}Finished | FeedbackHub{% endblock %}
+
+{% block content %}
+
+<section class="panel centered">
+
+    <h1>All Done!</h1>
+
+    <p class="subtitle">
+        {{ error_message if error_message is defined
+           else "Thank you for visiting FeedbackHub." }}
+    </p>
+
+    <a class="button primary" href="{{ url_for('index') }}">
+        Back to Home
+    </a>
+
+</section>
+
+{% endblock %}
