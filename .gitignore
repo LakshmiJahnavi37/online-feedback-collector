@@ -1,6 +1,9 @@
-venv/
-.venv/
-node_modules/
+
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
 .env
+database.db
+feedback.csv
+.DS_Store
