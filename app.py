@@ -1,4 +1,6 @@
+from dotenv import load_dotenv
 
+load_dotenv()
 import csv
 import io
 import os
@@ -23,13 +25,10 @@ app.secret_key = os.environ.get(
 )
 
 ADMIN_EMAIL = os.environ.get(
-    "ADMIN_EMAIL", "admin@example.com"
+    "ADMIN_EMAIL", "lakshmi@gmail.com"
 ).strip().lower()
 
-ADMIN_PASSWORD = os.environ.get(
-    "ADMIN_PASSWORD", "ChangeMe123!"
-)
-
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 # ---------------- DATABASE ----------------
 
